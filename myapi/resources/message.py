@@ -49,10 +49,10 @@ class NoteMessageList(Resource):
         return jsonify(data=[e.serialize() for e in messages])
 
 workparser = reqparse.RequestParser()
-workparser.add_argument('message', type=str, location='json')
-workparser.add_argument('workid', type=int, location='json')
-workparser.add_argument('buyerid', type=int, location='json')
-workparser.add_argument('sellerid', type=int, location='json')
+workparser.add_argument('message', type=str, location='json', required=True)
+workparser.add_argument('workid', type=int, location='json', required=True)
+workparser.add_argument('buyerid', type=int, location='json', required=True)
+workparser.add_argument('sellerid', type=int, location='json', required=True)
 
 work_message_result_field = {
     'id': fields.Integer,
@@ -87,9 +87,25 @@ class WorkMessage(Resource):
         return message
 
 class WorkMessageList(Resource):
-    def get(self, workid, buyerid, sellerid):
-        messages = WorkMessageModel.query.filter_by(work_id=workid).filter_by(buyer_id=buyerid).filter_by(seller_id=sellerid).all()
-        return jsonify(data=[e.serialize() for e in messages])
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('w', type=int, location='args', required=False)
+        parser.add_argument('b', type=int, location='args', required=False)
+        parser.add_argument('s', type=int, location='args', required=False)
+        args = parser.parse_args()
+
+        messages = WorkMessageModel.query
+        
+        if args.w:
+            messages = messages.filter_by(work_id=args.w)
+
+        if args.b:
+            messages = messages.filter_by(buyer_id=args.b)
+            
+        if args.s:
+            messages = messages.filter_by(seller_id=args.s)
+
+        return jsonify(data=[e.serialize() for e in messages.all()])
 
 # class VersionMessage(Resource):
 #     def get(self):

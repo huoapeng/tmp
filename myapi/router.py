@@ -67,7 +67,7 @@ from myapi.resources.message import NoteMessage, NoteMessageList, WorkMessage, W
 api.add_resource(NoteMessage, '/notemessage')
 api.add_resource(NoteMessageList, '/<int:noteid>/notemessagelist')
 api.add_resource(WorkMessage, '/workmessage')
-api.add_resource(WorkMessageList, '/<int:workid>/<int:buyerid>/<int:sellerid>/workmessagelist')
+api.add_resource(WorkMessageList, '/workmessagelist')
 
 from myapi.resources.smtp import sendEmail
 api.add_resource(sendEmail, '/sendemail')

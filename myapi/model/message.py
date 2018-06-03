@@ -66,5 +66,7 @@ class WorkMessageModel(db.Model):
             'sellerName': self.seller.nickname,
             'sellerImage': self.seller.getImage(),
             'message': self.message,
-            'publishDate': self.publishDate
+            'publishDate': self.publishDate,
+            'workid': self.work.id,
+            'workTitle': self.work.title
         }
