@@ -63,9 +63,11 @@ from myapi.resources.note import Note, ProjectNotes
 api.add_resource(Note, '/note', '/note/<int:noteid>')
 api.add_resource(ProjectNotes, '/<int:projectid>/projectnotes', endpoint='projectNotes')
 
-from myapi.resources.message import NoteMessage, NoteMessageList
+from myapi.resources.message import NoteMessage, NoteMessageList, WorkMessage, WorkMessageList
 api.add_resource(NoteMessage, '/notemessage')
 api.add_resource(NoteMessageList, '/<int:noteid>/notemessagelist')
+api.add_resource(WorkMessage, '/workmessage')
+api.add_resource(WorkMessageList, '/<int:workid>/<int:buyerid>/<int:sellerid>/workmessagelist')
 
 from myapi.resources.smtp import sendEmail
 api.add_resource(sendEmail, '/sendemail')
@@ -80,7 +82,7 @@ from myapi.resources.profile import Profile
 api.add_resource(Profile, '/profile')
 
 from myapi.resources.general import general
-api.add_resource(general, '/general/<string:method>')
+api.add_resource(general, '/general', '/general/<string:method>')
 
 from myapi.resources.file import UploadFile
 api.add_resource(UploadFile, '/uploadfile')

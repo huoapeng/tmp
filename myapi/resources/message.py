@@ -2,15 +2,16 @@ from flask import jsonify
 from flask.ext.restful import Resource, fields, marshal_with, marshal, reqparse
 from myapi import db
 from myapi.model.note import NoteModel
-from myapi.model.message import NoteMessageModel
+from myapi.model.message import NoteMessageModel, WorkMessageModel
 from myapi.model.user import UserModel
+from myapi.model.work import WorkModel
 
-parser = reqparse.RequestParser()
-parser.add_argument('message', type=str, location='json', required=True)
-parser.add_argument('noteid', type=int, location='json', required=True)
-parser.add_argument('userid', type=int, location='json', required=True)
+noteparser = reqparse.RequestParser()
+noteparser.add_argument('message', type=str, location='json', required=True)
+noteparser.add_argument('noteid', type=int, location='json', required=True)
+noteparser.add_argument('userid', type=int, location='json', required=True)
 
-result_field = {
+note_message_result_field = {
     'id': fields.Integer,
     'message': fields.String,
     'publishDate': fields.DateTime,
@@ -22,9 +23,9 @@ class NoteMessage(Resource):
     def get(self):
         pass
 
-    @marshal_with(result_field)
+    @marshal_with(note_message_result_field)
     def post(self):
-        args = parser.parse_args()
+        args = noteparser.parse_args()
         message = NoteMessageModel(args.message)
         db.session.add(message)
 
@@ -45,6 +46,49 @@ class NoteMessage(Resource):
 class NoteMessageList(Resource):
     def get(self, noteid):
         messages = NoteMessageModel.query.filter_by(note_id=noteid).all()
+        return jsonify(data=[e.serialize() for e in messages])
+
+workparser = reqparse.RequestParser()
+workparser.add_argument('message', type=str, location='json')
+workparser.add_argument('workid', type=int, location='json')
+workparser.add_argument('buyerid', type=int, location='json')
+workparser.add_argument('sellerid', type=int, location='json')
+
+work_message_result_field = {
+    'id': fields.Integer,
+    'message': fields.String,
+    'publishDate': fields.DateTime,
+    'work_id': fields.Integer,
+    'buyer_id': fields.Integer,
+    'seller_id': fields.Integer
+}
+
+class WorkMessage(Resource):
+    def get(self):
+        pass
+
+    @marshal_with(work_message_result_field)
+    def post(self):
+        args = workparser.parse_args()
+        print args
+        message = WorkMessageModel(args.message)
+        db.session.add(message)
+
+        work = WorkModel.query.get(args.workid)
+        work.messages.append(message)
+
+        buyer = UserModel.query.get(args.buyerid)
+        buyer.buyerMessages.append(message)
+
+        seller = UserModel.query.get(args.sellerid)
+        seller.sellerMessages.append(message)
+
+        db.session.commit()
+        return message
+
+class WorkMessageList(Resource):
+    def get(self, workid, buyerid, sellerid):
+        messages = WorkMessageModel.query.filter_by(work_id=workid).filter_by(buyer_id=buyerid).filter_by(seller_id=sellerid).all()
         return jsonify(data=[e.serialize() for e in messages])
 
 # class VersionMessage(Resource):

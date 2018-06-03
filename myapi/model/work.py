@@ -21,6 +21,9 @@ class WorkModel(db.Model):
     tags = db.relationship('WorkTagModel', secondary=work_tags,
         backref=db.backref('works', lazy='dynamic'))
 
+    messages = db.relationship('WorkMessageModel', order_by="WorkMessageModel.publishDate",
+        backref=db.backref('work', lazy='joined'), lazy='dynamic')
+
     def __init__(self, title=None, thumbnail=None, image=None, file=None, description=None, copyright=None):
         self.title = title
         self.thumbnail = thumbnail

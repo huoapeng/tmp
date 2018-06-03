@@ -30,6 +30,11 @@ class UserModel(db.Model):
     notemessages = db.relationship('NoteMessageModel', backref=db.backref('owner', lazy='joined'), lazy='dynamic')
     works = db.relationship('WorkModel', backref=db.backref('owner', lazy='joined'), lazy='dynamic')
 
+    buyerMessages = db.relationship('WorkMessageModel', foreign_keys='WorkMessageModel.buyer_id',
+        backref=db.backref('buyer', lazy='joined'), lazy='dynamic')
+    sellerMessages = db.relationship('WorkMessageModel', foreign_keys='WorkMessageModel.seller_id',
+        backref=db.backref('seller', lazy='joined'), lazy='dynamic')
+
     publishedProjects = db.relationship('ProjectModel', primaryjoin='UserModel.id==ProjectModel.ownerid', 
         backref=db.backref('owner', lazy='joined'), lazy='dynamic')
     wonProjects = db.relationship('ProjectModel', primaryjoin='UserModel.id==ProjectModel.winnerid', 
