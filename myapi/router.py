@@ -42,11 +42,12 @@ api.add_resource(Bid, '/bid')
 api.add_resource(BidList, '/<int:projectid>/bidlist', endpoint='projectBids')
 api.add_resource(BidCount, '/<int:projectid>/bidcount', endpoint='projectCount')
 
-from myapi.resources.project import Project, ProjectList, UserPublishedProjects, UserParticipateProjects
+from myapi.resources.project import Project, ProjectList, UserPublishedProjects, UserParticipateProjects, ProjectOneStep
 api.add_resource(Project, '/project', '/project/<int:projectid>', endpoint='project')
 api.add_resource(ProjectList, '/projectlist/<int:page>')
 api.add_resource(UserPublishedProjects, '/userPublishedProjects/<int:page>', endpoint='userPublishedProjects')
 api.add_resource(UserParticipateProjects, '/userParticipateProjects/<int:page>', endpoint='userParticipateProjects')
+api.add_resource(ProjectOneStep, '/projectonestep')
 
 from myapi.resources.category import Category, CategoryList, SearchCategorysByName, ProjectCategorys, UserCategorys
 api.add_resource(Category, '/category', '/category/<int:cid>')

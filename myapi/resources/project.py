@@ -6,6 +6,7 @@ from myapi.model.category import CategoryModel
 from myapi.model.project import ProjectModel
 from myapi.model.user import UserModel
 from myapi.model.bid import BidModel
+from myapi.model.enum import project_status, bid_status
 
 class Project(Resource):
     def get(self, projectid):
@@ -56,6 +57,42 @@ class Project(Resource):
         project.status = args.status
         db.session.commit()
         return project.serialize()
+
+class ProjectOneStep(Resource):
+    def post(self):
+        post_parser = reqparse.RequestParser()
+        post_parser.add_argument('name', type=str, location='json', required=True)
+        post_parser.add_argument('buyerid', type=int, location='json', required=True)
+        post_parser.add_argument('sellerid', type=int, location='json', required=True)
+        post_parser.add_argument('cids', type=str, location='json', required=True)
+        args = post_parser.parse_args()
+
+        project = ProjectModel(args.name)
+        project.status = project_status.selectBidder
+
+        for id in args.cids.split(','):
+            category = CategoryModel.query.get(id)
+            project.categorys.append(category)
+
+        db.session.add(project)
+
+        buyer = UserModel.query.get(args.buyerid)
+        buyer.publishedProjects.append(project)
+
+        seller = UserModel.query.get(args.sellerid)
+        seller.wonProjects.append(project)
+
+        bid = BidModel()
+        bid.user = seller
+        bid.status = bid_status.selectBidder
+
+        #project = ProjectModel.query.get(args.projectid)
+        project.bidders.append(bid)
+
+        db.session.commit()
+
+        return project.serialize()
+
 
 class UserPublishedProjects(Resource):
     def get(self, page):
