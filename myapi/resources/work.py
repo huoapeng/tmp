@@ -70,7 +70,7 @@ class WorkPic(Resource):
         if workpics:
             return jsonify(data=[e.serialize() for e in workpics])
         else:
-            return jsonify('{}')
+            return jsonify(data=[])
 
     def post(self):
         args = parser.parse_args()
