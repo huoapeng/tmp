@@ -1,7 +1,7 @@
 from flask import jsonify
 from flask.ext.restful import Resource, reqparse
 from myapi import db, app
-from myapi.model.work import WorkModel
+from myapi.model.work import WorkModel, WorkPicModel
 from myapi.model.user import UserModel
 from myapi.model.enum import work_status
 from myapi.model.tag import WorkTagModel
@@ -16,6 +16,7 @@ parser.add_argument('description', type=str, location='json')
 parser.add_argument('copyright', type=int, location='json')
 parser.add_argument('userid', type=int, location='json')
 parser.add_argument('tags', type=str, location='json')
+parser.add_argument('num', type=int, location='json')
 
 class Work(Resource):
     def get(self, workid):
@@ -51,7 +52,7 @@ class Work(Resource):
 
 class UserWorks(Resource):
     def get(self, userid, page):
-        works = WorkModel.query.filter_by(status = work_status.normal).filter_by(ownerid = userid)
+        works = WorkModel.query.filter(WorkModel.status != work_status.delete).filter(WorkModel.ownerid == userid)
         works = works.paginate(page, app.config['POSTS_PER_PAGE'], False)
         return jsonify(total = works.total,
             pages = works.pages,
@@ -62,6 +63,36 @@ class UserWorks(Resource):
             next_num = works.next_num,
             prev_num = works.prev_num,
             data=[e.serialize() for e in works.items])
+
+class WorkPic(Resource):
+    def get(self, workid):
+        workpics = WorkPicModel.query.filter_by(workid = workid).all()
+        if workpics:
+            return jsonify(data=[e.serialize() for e in workpics])
+        else:
+            return jsonify('{}')
+
+    def post(self):
+        args = parser.parse_args()
+        workpic = WorkPicModel(args.image, args.num)
+        db.session.add(workpic)
+
+        work = WorkModel.query.get(args.id)
+        work.pics.append(workpic)
+
+        user = UserModel.query.get(args.userid)
+        user.workpics.append(workpic)
+
+        db.session.commit()
+        return jsonify(workpic.serialize())
+
+    def put(self):
+        pass
+
+    def delete(self):
+        pass
+
+
 
 # class SearchTagsByName(Resource):
 #     def get(self, keyword):

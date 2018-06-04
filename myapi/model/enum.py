@@ -41,6 +41,7 @@ class file_type:
     work = 7
     workThumbnail = 8
     recommend = 9
+    workPic = 10
     workFile = 51
     bidFile = 52
 
@@ -80,6 +81,7 @@ class message_type:
 class work_status:
     normal = 1
     delete = 2
+    flash = 3
 
 class copyright_type:
     none = 1

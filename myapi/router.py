@@ -33,9 +33,10 @@ api.add_resource(WorkTag, '/worktag', '/worktag/<int:tagid>')
 api.add_resource(WorkTags, '/<int:workid>/worktags', endpoint='workTags')
 api.add_resource(SearchWorkTagsByName, '/search/worktaglist/<string:keyword>')
 
-from myapi.resources.work import Work, UserWorks
+from myapi.resources.work import Work, UserWorks, WorkPic
 api.add_resource(Work, '/work', '/work/<int:workid>')
 api.add_resource(UserWorks, '/<int:userid>/userworks/<int:page>', endpoint='userWorks')
+api.add_resource(WorkPic, '/workpic', '/workpic/<int:workid>')
 
 from myapi.resources.bid import Bid, BidList, BidCount
 api.add_resource(Bid, '/bid')

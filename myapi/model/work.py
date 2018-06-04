@@ -18,9 +18,8 @@ class WorkModel(db.Model):
 
     ownerid = db.Column(db.Integer, db.ForeignKey('user_model.id'))
 
-    tags = db.relationship('WorkTagModel', secondary=work_tags,
-        backref=db.backref('works', lazy='dynamic'))
-
+    tags = db.relationship('WorkTagModel', secondary=work_tags, backref=db.backref('works', lazy='dynamic'))
+    pics = db.relationship('WorkPicModel', backref=db.backref('work', lazy='joined'), lazy='dynamic')
     messages = db.relationship('WorkMessageModel', order_by="WorkMessageModel.publishDate",
         backref=db.backref('work', lazy='joined'), lazy='dynamic')
 
@@ -52,3 +51,27 @@ class WorkModel(db.Model):
             'owner':url_for('.user', _external=True, userid=self.ownerid),
             'tags':url_for('.workTags', _external=True, workid=self.id)
         }
+
+class WorkPicModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    image = db.Column(db.String(200))
+    num = db.Column(db.Integer)
+
+    workid = db.Column(db.Integer, db.ForeignKey('work_model.id'))
+    ownerid = db.Column(db.Integer, db.ForeignKey('user_model.id'))
+
+    def __init__(self, image, num):
+        self.image = image
+        self.num = num
+
+    def __repr__(self):
+        return '<User %r>' % (self.num)
+
+    def serialize(self):
+        return {
+            'workid': self.workid,
+            'ownerid': self.ownerid,
+            'image': getUploadFileUrl(file_type.workPic, self.ownerid, self.image),
+            'num': self.num
+        }
+

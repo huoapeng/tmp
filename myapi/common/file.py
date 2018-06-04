@@ -65,8 +65,8 @@ filePath = {
     file_type.workThumbnail : lambda folderName: 'user/{}/workThumbnail/'.format(folderName),
     file_type.recommend : lambda folderName: 'recommend/{}/'.format(folderName),
     file_type.workFile : lambda folderName: 'user/{}/workfile/'.format(folderName),
-    file_type.bidFile : lambda folderName: 'user/{}/bidfile/'.format(folderName)
-
+    file_type.bidFile : lambda folderName: 'user/{}/bidfile/'.format(folderName),
+    file_type.workPic : lambda folderName: 'user/{}/workPic/'.format(folderName)
 }
 
 def isAllowedFile(fileType, fileName):
