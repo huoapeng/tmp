@@ -51,6 +51,7 @@ class NoteMessageList(Resource):
 workparser = reqparse.RequestParser()
 workparser.add_argument('message', type=str, location='json', required=True)
 workparser.add_argument('workid', type=int, location='json', required=True)
+workparser.add_argument('senderid', type=int, location='json', required=True)
 workparser.add_argument('buyerid', type=int, location='json', required=True)
 workparser.add_argument('sellerid', type=int, location='json', required=True)
 
@@ -59,6 +60,7 @@ work_message_result_field = {
     'message': fields.String,
     'publishDate': fields.DateTime,
     'work_id': fields.Integer,
+    'sender_id': fields.Integer,
     'buyer_id': fields.Integer,
     'seller_id': fields.Integer
 }
@@ -76,6 +78,9 @@ class WorkMessage(Resource):
 
         work = WorkModel.query.get(args.workid)
         work.messages.append(message)
+
+        sender = UserModel.query.get(args.senderid)
+        sender.senderMessages.append(message)
 
         buyer = UserModel.query.get(args.buyerid)
         buyer.buyerMessages.append(message)
@@ -97,7 +102,7 @@ class WorkMessageList(Resource):
         messages = WorkMessageModel.query
         
         if args.w:
-            messages = messages.filter_by(work_id=args.w)
+            messages = messages.filter_by(work_id=args.w)  
 
         if args.b:
             messages = messages.filter_by(buyer_id=args.b)

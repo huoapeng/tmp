@@ -31,6 +31,8 @@ class UserModel(db.Model):
     works = db.relationship('WorkModel', backref=db.backref('owner', lazy='joined'), lazy='dynamic')
     workpics = db.relationship('WorkPicModel', backref=db.backref('owner', lazy='joined'), lazy='dynamic')
 
+    senderMessages = db.relationship('WorkMessageModel', foreign_keys='WorkMessageModel.sender_id',
+        backref=db.backref('sender', lazy='joined'), lazy='dynamic')
     buyerMessages = db.relationship('WorkMessageModel', foreign_keys='WorkMessageModel.buyer_id',
         backref=db.backref('buyer', lazy='joined'), lazy='dynamic')
     sellerMessages = db.relationship('WorkMessageModel', foreign_keys='WorkMessageModel.seller_id',

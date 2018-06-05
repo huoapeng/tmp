@@ -47,6 +47,7 @@ class WorkMessageModel(db.Model):
     publishDate = db.Column(db.DateTime)
 
     work_id = db.Column(db.Integer, db.ForeignKey('work_model.id'))
+    sender_id = db.Column(db.Integer, db.ForeignKey('user_model.id'))
     buyer_id = db.Column(db.Integer, db.ForeignKey('user_model.id'))
     seller_id = db.Column(db.Integer, db.ForeignKey('user_model.id'))
 
@@ -59,6 +60,9 @@ class WorkMessageModel(db.Model):
 
     def serialize(self):
         return {
+            'sender_id': self.sender.id,
+            'senderName': self.sender.nickname,
+            'senderImage': self.sender.getImage(),
             'buyer_id': self.buyer.id,
             'buyerName': self.buyer.nickname,
             'buyerImage': self.buyer.getImage(),
