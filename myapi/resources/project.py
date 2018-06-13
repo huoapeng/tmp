@@ -121,12 +121,19 @@ class UserParticipateProjects(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('userid', type=int, location='args', required=True)
         parser.add_argument('status', type=int, location='args', default=0)
+        parser.add_argument('winner', type=str, location='args')
         args = parser.parse_args()
         bids = UserModel.query.get(args.userid).bidProjects
 
         if args.status:
             bids = bids.filter(BidModel.project.has(ProjectModel.status == args.status))
         
+        if args.winner == 'isMe':
+            bids = bids.filter(BidModel.project.has(ProjectModel.winnerid == args.userid))
+
+        if args.winner == 'isNotMe':
+            bids = bids.filter(BidModel.project.has(ProjectModel.winnerid != args.userid))
+
         bids = bids.paginate(page, app.config['POSTS_PER_PAGE'], False)
         return jsonify(total = bids.total,
             pages = bids.pages,
