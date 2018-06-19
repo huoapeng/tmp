@@ -17,6 +17,8 @@ parser.add_argument('copyright', type=int, location='json')
 parser.add_argument('userid', type=int, location='json')
 parser.add_argument('tags', type=str, location='json')
 parser.add_argument('num', type=int, location='json')
+parser.add_argument('price', type=int, location='json')
+
 
 class Work(Resource):
     def get(self, workid):
@@ -28,7 +30,8 @@ class Work(Resource):
 
     def post(self):
         args = parser.parse_args()
-        work = WorkModel(args.title, args.thumbnail, args.image, args.file, args.description, args.copyright)
+        work = WorkModel(args.title, args.thumbnail, args.image,
+                         args.file, args.description, args.copyright, args.price)
         db.session.add(work)
 
         for tagid in args.tags.split(','):
@@ -50,23 +53,26 @@ class Work(Resource):
         db.session.commit()
         return jsonify(result='true')
 
+
 class UserWorks(Resource):
     def get(self, userid, page):
-        works = WorkModel.query.filter(WorkModel.status != work_status.delete).filter(WorkModel.ownerid == userid)
+        works = WorkModel.query.filter(WorkModel.status != work_status.delete).filter(
+            WorkModel.ownerid == userid)
         works = works.paginate(page, app.config['POSTS_PER_PAGE'], False)
-        return jsonify(total = works.total,
-            pages = works.pages,
-            page = works.page,
-            per_page = works.per_page,
-            has_next = works.has_next,
-            has_prev = works.has_prev,
-            next_num = works.next_num,
-            prev_num = works.prev_num,
-            data=[e.serialize() for e in works.items])
+        return jsonify(total=works.total,
+                       pages=works.pages,
+                       page=works.page,
+                       per_page=works.per_page,
+                       has_next=works.has_next,
+                       has_prev=works.has_prev,
+                       next_num=works.next_num,
+                       prev_num=works.prev_num,
+                       data=[e.serialize() for e in works.items])
+
 
 class WorkPic(Resource):
     def get(self, workid):
-        workpics = WorkPicModel.query.filter_by(workid = workid).all()
+        workpics = WorkPicModel.query.filter_by(workid=workid).all()
         if workpics:
             return jsonify(data=[e.serialize() for e in workpics])
         else:
@@ -91,7 +97,6 @@ class WorkPic(Resource):
 
     def delete(self):
         pass
-
 
 
 # class SearchTagsByName(Resource):
