@@ -61,6 +61,10 @@ class project_status:
     abort = 5
     deny = 6
 
+class order_status:
+    notPay = 1
+    paid = 2
+
 class tag_status:
     normal = 1
     delete = 2

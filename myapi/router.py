@@ -38,6 +38,11 @@ api.add_resource(Work, '/work', '/work/<int:workid>')
 api.add_resource(UserWorks, '/<int:userid>/userworks/<int:page>', endpoint='userWorks')
 api.add_resource(WorkPic, '/workpic', '/workpic/<int:workid>')
 
+from myapi.resources.order import Order, UserBoughtOrders, UserSoldOrders
+api.add_resource(Order, '/order', '/order/<int:orderid>', endpoint='order')
+api.add_resource(UserBoughtOrders, '/userBoughtOrders/<int:page>', endpoint='userBoughtOrders')
+api.add_resource(UserSoldOrders, '/userSoldOrders/<int:page>', endpoint='userSoldOrders')
+
 from myapi.resources.bid import Bid, BidList, BidCount
 api.add_resource(Bid, '/bid')
 api.add_resource(BidList, '/<int:projectid>/bidlist', endpoint='projectBids')

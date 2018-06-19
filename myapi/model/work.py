@@ -20,6 +20,8 @@ class WorkModel(db.Model):
 
     ownerid = db.Column(db.Integer, db.ForeignKey('user_model.id'))
 
+    orders = db.relationship('OrderModel', backref=db.backref(
+        'work', lazy='joined'), lazy='dynamic')
     tags = db.relationship('WorkTagModel', secondary=work_tags,
                            backref=db.backref('works', lazy='dynamic'))
     pics = db.relationship('WorkPicModel', backref=db.backref(
