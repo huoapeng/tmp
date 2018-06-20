@@ -29,7 +29,10 @@ class OrderModel(db.Model):
             'name': self.name,
             'price': self.price,
             'publishDate': self.publishDate.isoformat(),
-            'status': self.status,            
+            'status': self.status,    
+            'workid': self.workid,
+            'buyerid': self.buyerid,
+            'sellerid': self.sellerid,        
             'buyer': url_for('.user', _external=True, userid=self.buyerid),
             'seller': url_for('.user', _external=True, userid=self.sellerid)      
         }
